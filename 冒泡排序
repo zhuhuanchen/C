@@ -1,0 +1,50 @@
+//
+//  冒泡排序.c
+//  C
+//
+//  Created by MacBook on 2019/10/5.
+//  Copyright © 2019 MacBook. All rights reserved.
+//
+
+#include "冒泡排序.h"
+#include <stdio.h>
+#include <stdlib.h>
+#define GET_ARRAY_LEN(array,len) {len = (sizeof(array) / sizeof(array[0]));}
+
+void BubbleSort(int R[],int n) //默认待排序的关键字为整形
+{
+    int i,j,flag,temp;
+    for(i=n-1;i>=1;--i){
+        flag=0;
+        for(j=1;j<=i;++j){
+            if(R[j-1]>R[j])
+            {
+                temp=R[j];
+                R[j]=R[j-1];
+                R[j-1]=temp;
+                flag=1;
+            }
+        }
+        if(flag==0)
+            return;
+    }
+}
+
+
+int visit_array(int R[],int n){
+    for(int i=0;i<n;++i){
+        printf("R[%d]的值为：%d\n",i,R[i]);
+    }
+     return 0;
+}
+
+
+main()
+{
+    int a[]={1,3,4,2,9,0,7};
+    int b=7;
+    visit_array(a,b);
+    BubbleSort(a,b);
+    visit_array(a,b);
+    
+}
