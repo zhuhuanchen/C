@@ -1,0 +1,36 @@
+
+#include <stdio.h>
+#include <stdlib.h>
+#define GET_ARRAY_LEN(array,len) {len = (sizeof(array) / sizeof(array[0]));}
+
+void mergeSort(int A[],int low,int high)
+{
+    if(low<high){
+        int mid=(low+high)/2;
+        mergeSort(A, low, mid);  //归并排序前半段
+        mergeSort(A, mid+1, high); //归并排序后半段 264
+        merge(A,low,mid,high);
+/*这里直接修改了调用线性表的那一章的函数merge(),他的功能是把A数组中low到mid和mid+1到high范围内的两段有序序列归并为一段有序
+            序列 然而，我并没有在那一章中找到顺序表的merge函数，只找到了链表的merge函数*/
+    }
+}
+    
+
+
+int visit_array(int R[],int n){
+    for(int i=0;i<n;++i){
+        printf("R[%d]的值为：%d\n",i,R[i]);
+    }
+     return 0;
+}
+
+
+int main()
+{
+    int a[]={10,3,4,2,9,0,7};
+    int b=7;
+    visit_array(a,b);
+    mergeSort(a,0,b);
+    visit_array(a,b);
+    
+}
