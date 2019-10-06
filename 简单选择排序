@@ -1,0 +1,47 @@
+
+#include <stdio.h>
+#include <stdlib.h>
+#define GET_ARRAY_LEN(array,len) {len = (sizeof(array) / sizeof(array[0]));}
+
+void SelectSort(int R[],int n)
+{
+    int i,j,k,temp;
+    for(i=0;i<n;++i){
+        k=i;
+        /*
+         这个循环是算法的关键，它从无序序列中挑出一个最小的关键字
+         */
+        for(j=i+1;j<n;++j){
+            if(R[k]>R[j]){
+                k=j;
+            //printf("k=%d,j=%d,i=%d\n",k,j,i);
+            }
+        }
+            /*下面3句完成最小关键字与无序序列第一个关键字的交换*/
+        //第一次因为括号括错了地方，把下面的三句括到for循环里面了，导致错误
+            temp=R[i];
+            //printf("temp=%d,R[%d]=%d\n",temp,i,R[i]);
+            R[i]=R[k];
+            R[k]=temp;
+    }
+}
+    
+
+
+int visit_array(int R[],int n){
+    for(int i=0;i<n;++i){
+        printf("R[%d]的值为：%d\n",i,R[i]);
+    }
+     return 0;
+}
+
+
+int main()
+{
+    int a[]={10,3,4,2,9,0,7};
+    int b=7;
+    visit_array(a,b);
+    SelectSort(a,b);
+    visit_array(a,b);
+    
+}
