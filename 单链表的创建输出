@@ -42,6 +42,12 @@ Linklist Creat_list(Linklist head) {
         node->data = i;               //  为新结点的数据域赋值
         node->next = head->next;          //  将头指针所指向的下一个结点的地址，赋给新创建结点的next
         head->next = node;          //  将新创建的结点的地址赋给头指针的下一个结点
+
+        //人为制造重复的数值，用来去重
+        node = (Linklist)malloc(sizeof(Lnode));     //  为新结点开辟内存空间
+        node->data = i;               //  为新结点的数据域赋值
+        node->next = head->next;          //  将头指针所指向的下一个结点的地址，赋给新创建结点的next
+        head->next = node;          //  将新创建的结点的地址赋给头指针的下一个结点
     }
     return head;
 }
@@ -89,16 +95,119 @@ int SearchK(Lnode *list ,int k){
 
 
 
+//将链表根据节点的数据域从小到大排序
+
+void sort(Lnode *list)
+{
+    Lnode *pcur=list;  //移动指针
+    Lnode *ppre; //结点插入位置的前驱节点
+    Lnode *ptemp=pcur->next; //记录pcur之后的指针,保证链表完整
+    
+    pcur->next=NULL; //构造只有一个结点的有序链表
+    pcur=ptemp;
+    while(NULL!=pcur) //链表未达到尾部
+    {
+        ptemp=pcur->next;
+        ppre=list;
+    
+    //结点数据小于第一个节点数据，插入第一个节点之前。
+    if(list->data>pcur->data)
+    {
+        pcur->next=list;
+        list=pcur;
+    }
+    else //结点数据大于第一个结点数据
+    {
+        //有序链表非空并且ppre后的结点数据小于插入结点
+        while(ppre->next !=NULL && ppre->next->data<pcur->data)
+            ppre=ppre->next; //在有序链表中查找结点插入的位置
+        pcur->next=ppre->next; //在ppre后面插入该结点
+        ppre->next=pcur; //ppre 指针域指向插入的结点
+    }
+    pcur=ptemp;//继续扫描剩下的结点
+}
+}
+
+//删除重复结点的算法
+//这个算法有个bug，就是把0剔除掉了。找一下原因。如果创建单链表的时候，从1开始，那么答案就是对的，如果从2开始，就是//错误的，因为把0舍去了。
+Lnode* RemoveSame(Lnode *list){
+    
+    Lnode *pcur;//用于遍历链表
+    Lnode *pnext; //遍历pcur后面的结点，并与pcur的值比较
+    Lnode *ptemp; //保存需要删除的结点
+    pcur = list;
+    while(NULL!=pcur) //遍历整个链表直到NULL
+    {
+        pnext=pcur;
+        while(NULL!=pnext->next) //遍历pcur后面的结点
+        {
+            if(pnext->next->data == pcur->data)
+            {
+                ptemp=pnext->next;  //保存需要删掉的结点
+                pnext->next = ptemp->next; //连接删除结点的前后结点
+                free(ptemp);
+            }
+            else
+                pnext=pnext->next;
+        }
+        pcur=pcur->next;
+    }
+    return list;
+}
+
+//这个题中，要求是带头结点的单链表。
+//删除递增链表序列中删除大于min，小于maxk的所有的元素
+void DeleteSome(Lnode *L,int mink,int maxk){  //答案中的是linklist &L，但是显示报错。
+    //改为了Lnode *L是对的。
+    //指向头结点，头结点
+    Lnode *ppre_min=L;
+    Lnode *ppre_max=L; //记录第一个大于maxk的结点
+    Lnode *pmin=L->next; //记录第一个大于mink的结点的前驱结点
+    Lnode *pmax=L->next; //记录第一个大于maxk的结点的前驱结点
+    
+    while(NULL!=pmin && NULL !=pmax) //遍历链表
+    {
+        if(pmin->data<mink)  //找到第一个大于mink的结点
+        {
+            ppre_min=pmin;
+            pmin=pmin->next;
+        }
+        if(pmax->data>maxk) //找到第一个大于maxk的结点
+            break;
+        ppre_max=pmax;
+        pmax=pmax->next;
+    }
+    ppre_min->next=pmax; //删除目的元素
+    ppre_max->next=NULL; //将要释放的链表尾部结点的下一个设为NULL
+    
+    while(NULL!=pmin) //释放删除的结点内存空间
+    {
+        pmax=pmin;
+        pmin=pmin->next;
+        free(pmax);
+    }
+}
+
 
 
 
 int main() {
     Linklist head = NULL;            //  链表的头指针
-    head = Creat_list_2(head);        //  创建链表
+    head = Creat_list(head);        //  创建链表
     Illustrate(head);               //  输出每个结点的数据域
     system("pause");
+    printf("倒数第3个节点的值为:");
     SearchK(head,3);
+    sort(head);
+    Illustrate(head);
     //printf("%d\n",SearchK(head,3));
+    printf("去重后的单链接为:");
+    Illustrate(RemoveSame(head));
+    
+    DeleteSome(head,1,4);
+    printf("删除大于1小于4的单链接为:");
+    Illustrate(RemoveSame(head));
+    
     return 0;
     
 }
