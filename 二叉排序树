@@ -1,0 +1,232 @@
+//
+//  二叉排序树相关.c
+//  C
+//
+//  Created by MacBook on 2019/10/18.
+//  Copyright © 2019 MacBook. All rights reserved.
+//
+
+#include "二叉排序树相关.h"
+
+#include <stdio.h>
+#include <stdlib.h>
+#include <stdio.h>
+#include <sys/malloc.h>
+
+/*
+*二叉查找树（二叉搜索树）的创建，插入，查找，删除
+*/
+struct tnode
+{
+    int data;
+    struct tnode *lchild;
+    struct tnode *rchild;
+};
+struct tnode * tree_insert(struct tnode *root,int data)//插入二叉搜索树的节点
+{
+    struct tnode *s;
+    //构造要插入的节点
+    s=(struct tnode *)malloc(sizeof(struct tnode));
+    s->data=data;
+    s->lchild=NULL;
+    s->rchild=NULL;
+    if(root==NULL)
+    {
+        root=s;
+    }
+    else
+    {
+        if(root->data==s->data)
+            return root;
+        else
+        {
+            if(s->data>root->data)
+                //tree_insert(root->rchild,s->data); 这样写是错误的，因为不能将根节点和子节点连接在一块。 仔细想一下递归过程。
+                root->rchild=tree_insert(root->rchild,s->data);
+            else
+                //tree_insert(root->lchild,s->data); 这样写是错误的，因为不能将根节点和子节点连接在一块。
+                root->lchild=tree_insert(root->lchild,s->data);
+        }
+    }
+    return root;
+}
+void tree_scaner(struct tnode *root)
+{
+    if(root==NULL)
+        return;
+    
+//    printf("%d ",root->data);
+    tree_scaner(root->lchild);
+    printf("%d ",root->data);
+    tree_scaner(root->rchild);
+}
+int tree_search(struct tnode* root,int data)
+{
+    if(root==NULL)
+        return 0; //return -1程序出错，if语句认为-1不是FALSE。而0是FALSE。
+    else
+    {
+        if(root->data==data)
+            return 1;
+        else if(root->data<data)
+            return tree_search(root->rchild,data);
+        else
+             return tree_search(root->lchild,data);
+            
+    }
+    //return 0;
+}
+ 
+void tree_delete(struct tnode* root,int data)
+{
+    struct tnode *p,*pf,*t,*s,*sf;
+    //找到要删除的节点
+    t=root;
+    int flag=0;
+    if(t->data==data)
+    {
+        p=root;
+        flag=1;
+    }
+    //出现的一个错误，就是下面的while循环里面，全都是if，而不是if-else，这样是不对的，因为程序的本意是一次循环只执行三种情况的一种。
+    while(t!=NULL)
+    {
+        if(t->data>data)
+        {
+            pf=t;
+            t=t->lchild;
+        }
+        else if(t->data<data)
+        {
+            pf=t;
+            t=t->rchild;
+        }
+        else if(t->data==data)
+        {
+            p=t;
+            flag=1;
+            break;
+        }
+    }
+    //找到要删除的节点
+    
+    //根据三种不同情况删除节点
+    if(flag==0)
+    {
+        printf("this node not in the tree!");
+    }
+    //出现的一个错误，三种情况全用if，而不是if-else，这样是不对的，因为程序的本意是一次循环只执行三种情况的一种。
+    if(p->lchild==NULL&&p->rchild==NULL)
+    {
+        if(p==root)
+        {
+            root=NULL;
+        }
+        else
+        {
+            //不能这样写<span style="font-family: Arial, Helvetica, sans-serif;">p=NULL;</span>
+            if(pf->lchild==p)
+                pf->lchild=NULL;
+            else
+                pf->rchild=NULL;//体会这两种写法的不同。
+        }
+    }
+    else if((p->lchild==NULL&&p->rchild!=NULL)||(p->lchild!=NULL&&p->rchild==NULL))
+    {
+        if(p==root)
+        {
+            if(p->lchild==NULL)
+                root=p->rchild;
+            else
+                root=p->lchild;
+        }
+        else
+        {
+            if(p->lchild==NULL)
+            {
+                if(pf->rchild==p)
+                {
+                    pf->rchild=p->rchild;
+                }
+                else
+                {
+                    pf->lchild=p->rchild;
+                }
+            }
+            else
+            {
+                if(pf->rchild==p)
+                {
+                    pf->rchild=p->lchild;
+                }
+                else
+                {
+                    pf->lchild=p->rchild;
+                }
+            }
+        }
+    }
+    
+    else if(p->lchild!=NULL&&p->rchild!=NULL)
+    {
+        s=p->rchild;
+        while(s->lchild!=NULL)
+        {
+            sf=s;
+            s=s->lchild;
+        }//纠结的部分，找到p的直接后继
+        p->data=s->data;
+        sf->lchild=s->rchild;
+    }
+    
+}
+
+//输出[L,R]区间内所有的数值结点
+void inorder(struct tnode* T){
+    if(T){
+        inorder(T->lchild);
+            if(T->data>=1 && T->data<=18)  //原答案中用的是||，结果是错误的。
+                printf("%d ",T->data);
+        inorder(T->rchild);
+        
+    }
+}
+
+
+int main()
+{
+    struct tnode *root;
+    int data,i;
+    int tree[12]={15,16,20,18,23,5,12,13,3,10,6,7};
+//    root=(struct tnode *)malloc(sizeof(struct tnode));
+//构建二叉搜索树
+    root=NULL;//need or not?必须要赋NULL值，因为当节点为空时就把改节点当成根节点。
+    //while(scanf("%d",&data)!=EOF)
+    for(i=0;i<12;++i)
+    {
+        printf("....\n");
+        data=tree[i];
+        root=tree_insert(root,data);
+    }
+    //构建二叉搜索树
+    tree_scaner(root);//遍历二叉搜索树
+    //在二叉搜索树种查找某个节点
+    printf("input key:");
+    scanf("%d",&data);
+    if(tree_search(root,data))
+    {
+        printf("yes\n");
+    }
+    else
+    {
+        printf("failed\n");
+    }
+    printf("delete key:");
+    scanf("%d",&data);
+    tree_delete(root,data);
+    tree_scaner(root);
+    //删除大于1小于18的数值
+    printf("删除后的二叉树的结点值为:\n");
+    inorder(root);
+    
+}
