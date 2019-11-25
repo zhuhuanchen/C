@@ -135,7 +135,7 @@ int NoLeafCount(BTCHINALR *bt){
 }
 
 
-//叶子节点的个数的算法
+//叶子节点的个数的算法(标准的，正确的)
 int LeafCount_2(BTCHINALR *bt){
     if(NULL== bt)//空树 为什么空树是这样写呢
         return 0;
@@ -143,6 +143,17 @@ int LeafCount_2(BTCHINALR *bt){
         return 1;
     return (LeafCount_2(bt->lchild)+LeafCount_2(bt->rchild));;
 }
+
+//叶子节点的个数的算法(这个也是正确的，刚好和上面的非叶子节点的算法比较类似，可以记住这个算法)
+int LeafCount_5(BTCHINALR *bt){
+    if(NULL== bt)//空树 为什么空树是这样写呢
+        return 0;
+    else if(NULL == bt->lchild && NULL == bt->rchild)
+        return 1;
+    else return (LeafCount_5(bt->lchild)+LeafCount_5(bt->rchild));;
+}
+
+
 
 //自己改编计算叶子节点的个数
 //网上的代码，仔细想想上面自己的改编错误在哪里，碰到第一个节点为非叶子节点，直接return 0了。
@@ -273,6 +284,9 @@ main()
     
     int c=LeafCount_2(bt);
       printf("二叉树叶子节点的个数为:%d \n",c);
+    
+    c=LeafCount_5(bt);
+       printf("LeafCount_5二叉树叶子节点的个数为:%d \n",c);
     
     int d=recursive(5);
     printf("阶乘的结果为:%d \n",d);
