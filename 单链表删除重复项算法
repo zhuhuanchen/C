@@ -1,0 +1,23 @@
+Lnode* RemoveSame(Lnode *list){
+    Lnode *pcur;//用于遍历链表
+    Lnode *pnext; //遍历pcur后面的结点，并与pcur的值比较
+    Lnode *ptemp; //保存需要删除的结点
+    pcur = list;
+    while(NULL!=pcur) //遍历整个链表直到NULL
+    {
+        pnext=pcur;
+        while(NULL!=pnext->next) //遍历pcur后面的结点
+        {
+            if(pnext->next->data == pcur->data)
+            {
+                ptemp=pnext->next;  //保存需要删掉的结点
+                pnext->next = ptemp->next; //连接删除结点的前后结点
+                free(ptemp);
+            }
+            else
+                pnext=pnext->next;
+        }
+        pcur=pcur->next;
+    }
+    return list;
+}
