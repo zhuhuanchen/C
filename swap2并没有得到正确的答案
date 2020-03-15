@@ -1,0 +1,56 @@
+
+
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include <time.h>
+
+
+int swap2(int *x,int *y, int size)
+{
+    int *tmp;
+    if((tmp=malloc(size))==NULL)
+        return -1;
+    
+    printf("x=%d\n",*x);
+    printf("y=%d\n",*y);
+
+    memcmp(tmp,x,size); memcmp(x,y,size);memcmp(y,tmp,size);
+    //memcmp(&tmp,&x,size); memcmp(&x,&y,size);memcmp(&y,&tmp,size);
+    printf("x2=%d\n",*x);
+    
+    
+    free(tmp);
+    
+    return(0);
+        
+}
+
+
+
+int main(int argc, const char * argv[]) {
+    // insert code here...
+    printf("Hello, World!\n");
+    
+    int a=3;
+    int b=4;
+    
+    int *c=&a;
+    int *d=&b;
+
+    printf("c=%d\n",*c);
+    printf("d=%d\n",*d);
+    
+    swap2(&a,&b,4);   //并没有得到正确的答案，很是奇怪
+    printf("a=%d\n",a);
+
+    printf("a=%d\n",a);
+
+    memcpy(&a, &b, 4); //得到了正确的答案了 
+    printf("a=%d\n",a);
+
+    
+    return 0;
+    
+}
+
