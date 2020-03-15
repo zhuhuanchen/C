@@ -1,0 +1,44 @@
+//
+//  main.c
+//  202003122322C
+//
+//  Created by MacBook on 2020/3/12.
+//  Copyright © 2020 MacBook. All rights reserved.
+//
+
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include <time.h>
+
+
+void exchange(int *b, int *c){
+    int d;
+    d=*b;
+    *b=*c;
+    *c=d;
+}
+
+
+
+int main(int argc, const char * argv[]) {
+     
+    int a=3;
+    int b=4;
+    
+    int *c=&a;
+    int *d=&b;
+
+
+    exchange(&a,&b);  //特别注意这个地方传递的是地址，特别需要注意
+    printf("a=%d\n",a);
+
+    
+    return 0;
+    
+}
+
+
+
+
+
